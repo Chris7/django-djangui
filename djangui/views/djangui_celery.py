@@ -106,6 +106,7 @@ class CeleryTaskView(TemplateView):
                         'file_groups': out_files,
                         'status': djangui_job.status,
                         'last_modified': djangui_job.modified_date,
+                        'job': djangui_job
                     }
             else:
                 ctx['task_error'] = _('You are not authenticated to view this job.')

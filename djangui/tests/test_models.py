@@ -56,3 +56,10 @@ class TestJob(mixins.ScriptFactoryMixin, mixins.FileCleanupMixin, TestCase):
         job = utils.create_djangui_job(script_pk=script.pk,
                                         data={'fasta': open(os.path.join(config.DJANGUI_TEST_DATA, 'fasta.fasta')),
                                         'out': 'abc', 'job_name': 'abc'})
+
+        # check our upload link is ok
+        file_previews = utils.get_file_previews(job)
+        for group, files in file_previews.items():
+            for fileinfo in files:
+                response = Client().get(fileinfo.get('url'))
+                self.assertEqual(response.status_code, 200)

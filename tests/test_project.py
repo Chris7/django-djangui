@@ -22,7 +22,8 @@ class TestProject(TestCase):
             shutil.rmtree(DJANGUI_TEST_PROJECT_PATH)
 
     def tearDown(self):
-        shutil.rmtree(DJANGUI_TEST_PROJECT_PATH)
+        if os.path.exists(DJANGUI_TEST_PROJECT_PATH):
+            shutil.rmtree(DJANGUI_TEST_PROJECT_PATH)
 
     def test_bootstrap(self):
         proc = subprocess.Popen([PYTHON_INTERPRETTER, DJANGUI_SCRIPT_PATH, '-p', DJANGUI_TEST_PROJECT_NAME],

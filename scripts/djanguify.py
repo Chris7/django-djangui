@@ -14,6 +14,24 @@ import djangui
 from djangui import django_compat
 env = os.environ
 
+def which(pgm):
+    # from http://stackoverflow.com/questions/9877462/is-there-a-python-equivalent-to-the-which-command
+    path=os.getenv('PATH')
+    for p in path.split(os.path.pathsep):
+        p=os.path.join(p,pgm)
+        if os.path.exists(p) and os.access(p, os.X_OK):
+            return p
+
+def walk_dir(templates, dest, filter=None):
+    l = []
+    for root, folders, files in os.walk(templates):
+        for filename in files:
+            if filename.endswith('.pyc') or (filter and filename not in filter):
+                continue
+            relative_dir = '.{0}'.format(os.path.split(os.path.join(root, filename).replace(templates, ''))[0])
+            l.append((os.path.join(root, filename), os.path.join(dest, relative_dir)))
+    return l
+
 def main():
     parser = ArgumentParser(description=description)
     parser.add_argument('-p', '--project', help='The name of the django project to create.', type=str, required=True)
@@ -25,13 +43,15 @@ def main():
         sys.stderr.write('Project {0} already exists.\n'.format(project_name))
         return 1
     env['DJANGO_SETTINGS_MODULE'] = ''
-    subprocess.call(['django-admin.py', 'startproject', project_name], env=env)
+    admin_command = [sys.executable] if sys.executable else []
+    admin_path = which('django-admin.py')
+    admin_command.extend([admin_path, 'startproject', project_name])
+    subprocess.call(admin_command, env=env)
     project_root = project_name
     project_base_dir = os.path.join(os.path.realpath(os.path.curdir), project_root, project_name)
 
     djanguify_folder = os.path.split(os.path.realpath(djangui.__file__))[0]
     project_template_dir = os.path.join(djanguify_folder, 'conf', 'project_template')
-
 
     context = Context(
         dict({
@@ -41,15 +61,6 @@ def main():
     ))
 
     template_files = []
-    def walk_dir(templates, dest, filter=None):
-        l = []
-        for root, folders, files in os.walk(templates):
-            for filename in files:
-                if filename.endswith('.pyc') or (filter and filename not in filter):
-                    continue
-                relative_dir = '.{0}'.format(os.path.split(os.path.join(root, filename).replace(templates, ''))[0])
-                l.append((os.path.join(root, filename), os.path.join(dest, relative_dir)))
-        return l
 
     template_files += walk_dir(project_template_dir, project_base_dir)
 

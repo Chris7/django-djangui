@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-__author__ = 'chris'
-description = """
-Create a Django app with Djangui setup.
-"""
 import sys
 import os
 import subprocess
@@ -10,8 +5,7 @@ import shutil
 from argparse import ArgumentParser
 from django.template import Context
 import djangui
-from djangui import django_compat
-env = os.environ
+from .. import django_compat
 
 def which(pgm):
     # from http://stackoverflow.com/questions/9877462/is-there-a-python-equivalent-to-the-which-command
@@ -31,8 +25,10 @@ def walk_dir(templates, dest, filter=None):
             l.append((os.path.join(root, filename), os.path.join(dest, relative_dir)))
     return l
 
-def main():
-    parser = ArgumentParser(description=description)
+def bootstrap(env=None, cwd=None):
+    if env is None:
+        env = os.environ
+    parser = ArgumentParser(description="Create a Django app with Djangui setup.")
     parser.add_argument('-p', '--project', help='The name of the django project to create.', type=str, required=True)
     args = parser.parse_args()
 
@@ -40,12 +36,15 @@ def main():
     new_project = not os.path.exists(project_name)
     if not new_project:
         sys.stderr.write('Project {0} already exists.\n'.format(project_name))
-        return 1
+        sys.exit(1)
     env['DJANGO_SETTINGS_MODULE'] = ''
     admin_command = [sys.executable] if sys.executable else []
     admin_path = which('django-admin.py')
     admin_command.extend([admin_path, 'startproject', project_name])
-    subprocess.call(admin_command, env=env)
+    admin_kwargs = {'env': env}
+    if cwd is not None:
+        admin_kwargs.update({'cwd': cwd})
+    subprocess.call(admin_command, **admin_kwargs)
     project_root = project_name
     project_base_dir = os.path.join(os.path.realpath(os.path.curdir), project_root, project_name)
 
@@ -91,7 +90,3 @@ def main():
     sys.stdout.write("Please enter the project directory {0}, and run python manage.py createsuperuser and"
                      " python manage.py runserver to start. The admin can be found at localhost:8000/admin. You may also want to set your "
                      "DJANGO_SETTINGS_MODULE environment variable to {0}.settings \n".format(project_name))
-    return 0
-
-if __name__ == "__main__":
-    sys.exit(main())

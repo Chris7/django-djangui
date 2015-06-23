@@ -11,7 +11,7 @@ python:
 install:
   - pip install -q $DJANGO_VERSION
   - pip install -q -r requirements.txt
-  - pip install -q -e .
+  - pip install -e .
 # command to run tests
 script: make test
 after_success:

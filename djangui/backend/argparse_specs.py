@@ -169,19 +169,19 @@ class ArgParseNode(object):
 
 class ArgParseNodeBuilder(object):
     def __init__(self, script_path=None, script_name=None):
-        self.valid = True
+        self.valid = False
         self.error = ''
+        parsers = []
         try:
             module = imp.load_source(script_name, script_path)
         except:
             sys.stderr.write('Error while loading {0}:\n'.format(script_path))
             self.error = '{0}\n'.format(traceback.format_exc())
             sys.stderr.write(self.error)
-            self.valid = False
-            return
-        main_module = module.main.__globals__ if hasattr(module, 'main') else globals()
-        parsers = [v for i, v in chain(six.iteritems(main_module), six.iteritems(vars(module)))
-                   if issubclass(type(v), argparse.ArgumentParser)]
+        else:
+            main_module = module.main.__globals__ if hasattr(module, 'main') else globals()
+            parsers = [v for i, v in chain(six.iteritems(main_module), six.iteritems(vars(module)))
+                       if issubclass(type(v), argparse.ArgumentParser)]
         if not parsers:
             f = tempfile.NamedTemporaryFile()
             ast_source = source_parser.parse_source_file(script_path)
@@ -194,8 +194,8 @@ class ArgParseNodeBuilder(object):
                    if issubclass(type(v), argparse.ArgumentParser)]
         if not parsers:
             sys.stderr.write('Unable to identify ArgParser for {0}:\n'.format(script_path))
-            self.valid = False
             return
+        self.valid = True
         parser = parsers[0]
         self.class_name = script_name
         self.script_path = script_path

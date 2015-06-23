@@ -6,4 +6,4 @@ testenv:
 test:
 	nosetests --with-coverage --cover-erase --cover-package=djangui tests
 	coverage run --append --branch --source=djangui `which django-admin.py` test --settings=djangui.test_settings djangui.tests
-	coverage report --omit=djangui/conf*,djangui/migrations*,djangui/tests*,djangui/backend/ast*
+	coverage report

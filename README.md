@@ -38,7 +38,7 @@ It was also based on my own needs as a data scientist to have a system that coul
 
 There is a bootstrapper included with djangui, which will create a Django project and setup most of the needed settings automagically for you.
 
-    1. djanguify.py -p ProjectName
+    1. djanguify -p ProjectName
     2. Follow the instructions at the end of the bootstrapper
        to create the admin user and access the admin page
     3. Login to the admin page wherever the project is

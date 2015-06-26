@@ -9,7 +9,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-djangui',
-    version='0.2.6',
+    version='0.2.8',
     packages=find_packages(),
     scripts=['scripts/djanguify'],
     entry_points={'console_scripts': ['djanguify = djangui.backend.command_line:bootstrap',]},

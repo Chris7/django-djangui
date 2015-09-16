@@ -1,8 +1,8 @@
+Djangui has been merged with Wooey! You can get the latest and greatest at the organization [Wooey](http://www.github.com/wooey)
+
 # Djangui
 
 [![Build Status](https://travis-ci.org/Chris7/django-djangui.svg?branch=master)](https://travis-ci.org/Chris7/django-djangui)  [![Coverage Status](https://coveralls.io/repos/Chris7/django-djangui/badge.svg?branch=master)](https://coveralls.io/r/Chris7/django-djangui?branch=master)
-
-Note: Djangui is in the process of being merged with Wooey. The majority of the codebase will be Djangui -- so projects will not be affected significantly (still Django based, etc.). You can follow this progress at the organization [Wooey](http://www.github.com/wooey)
 
 1. [Installation](#install)
     1. [A Djangui Only Project](#djonly)
